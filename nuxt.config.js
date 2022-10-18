@@ -18,7 +18,7 @@ export default {
   css: [],
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
-  plugins: [],
+  plugins: ['~/plugins/vee-validate.js'],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
   components: true,
@@ -69,7 +69,7 @@ export default {
           success: colors.green.accent3,
         },
 
-        light:{
+        light: {
           primary: '#001732',
           accent: colors.grey.darken3,
           secondary: colors.amber.darken3,
@@ -77,12 +77,14 @@ export default {
           warning: colors.amber.base,
           error: '#f44336',
           success: '#4caf50',
-
-        }
+        },
       },
     },
   },
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
-  build: {},
+
+  build: {
+    transpile: ['vee-validate/dist/rules'],
+  },
 }
