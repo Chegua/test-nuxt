@@ -1,87 +1,138 @@
 <template>
   <v-row justify="center" align="center">
-    <v-col cols="12" sm="8" md="6">
-      <v-card class="logo py-4 d-flex justify-center">
-        <NuxtLogo />
-        <VuetifyLogo />
-      </v-card>
-      <v-card>
-        <v-card-title class="headline">
-          Welcome to the Vuetify + Nuxt.js template
-        </v-card-title>
-        <v-card-text>
-          <p>
-            Vuetify is a progressive Material Design component framework for
-            Vue.js. It was designed to empower developers to create amazing
-            applications.
-          </p>
-          <p>
-            For more information on Vuetify, check out the
-            <a
-              href="https://vuetifyjs.com"
-              target="_blank"
-              rel="noopener noreferrer"
+    <v-col cols="12">
+      <v-card class="py-4 px-2">
+        <v-row>
+          <v-col cols="12">
+            <h1
+              class="display-2 text-center font-weight-bold text--primary mb-5"
             >
-              documentation </a
-            >.
-          </p>
-          <p>
-            If you have questions, please join the official
-            <a
-              href="https://chat.vuetifyjs.com/"
-              target="_blank"
-              rel="noopener noreferrer"
-              title="chat"
+              ADMINISTRADOR
+            </h1>
+          </v-col>
+
+          <v-col cols="12">
+            <v-data-table
+              :headers="headers"
+              :items="[]"
+              :items-per-page="5"
+              class="elevation-1"
+              hide-default-footer
             >
-              discord </a
-            >.
-          </p>
-          <p>
-            Find a bug? Report it on the github
-            <a
-              href="https://github.com/vuetifyjs/vuetify/issues"
-              target="_blank"
-              rel="noopener noreferrer"
-              title="contribute"
-            >
-              issue board </a
-            >.
-          </p>
-          <p>
-            Thank you for developing with Vuetify and I look forward to bringing
-            more exciting features in the future.
-          </p>
-          <div class="text-xs-right">
-            <em><small>&mdash; John Leider</small></em>
-          </div>
-          <hr class="my-3" />
-          <a
-            href="https://nuxtjs.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Nuxt Documentation
-          </a>
-          <br />
-          <a
-            href="https://github.com/nuxt/nuxt.js"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Nuxt GitHub
-          </a>
-        </v-card-text>
-        <v-card-actions>
-          <v-spacer />
-          <v-btn color="primary" nuxt to="/inspire"> Continue </v-btn>
-        </v-card-actions>
+              <template v-slot:top>
+                <v-toolbar flat class="pt-2">
+                  <v-toolbar-title>Productos</v-toolbar-title>
+                  <v-divider class="mx-4" inset vertical></v-divider>
+                  <v-btn
+                    color="success"
+                    @click="dialogFormProduct = true"
+                    small
+                    dark
+                    class="mb-2"
+                  >
+                    Agregar productos
+                  </v-btn>
+
+                  <v-spacer></v-spacer>
+                  <v-text-field
+                    label="Buscar"
+                    append-icon="mdi-magnify"
+                  ></v-text-field>
+                </v-toolbar>
+              </template>
+              <!-- <template v-slot:body.append>
+                <tr>
+                  <td></td>
+                  <td>
+                    <v-text-field
+                      v-model="calories"
+                      type="number"
+                      label="Less than"
+                    ></v-text-field>
+                  </td>
+                  <td colspan="4"></td>
+                </tr>
+              </template> -->
+            </v-data-table>
+          </v-col>
+        </v-row>
       </v-card>
     </v-col>
+    <v-dialog v-model="dialogFormProduct">
+      <v-card tile>
+        <v-toolbar flat dark color="primary"> 
+          <v-toolbar-title>Nuevo producto</v-toolbar-title>
+        </v-toolbar>
+
+        <v-container fluid>
+          <v-row>
+            <v-col cols="12"> 
+              <h2 class="grey--text">Informacion del producto</h2>
+              <hr>
+            </v-col>
+
+            <v-col cols="12" sm="8">
+              <v-text-field label="Nombre" dense outlined></v-text-field>
+
+            </v-col>
+
+            <v-col cols="12" sm="4">
+              <v-text-field label="Nombre corto" dense outlined></v-text-field>
+            </v-col>
+
+
+            <v-col cols="12" sm="4">
+              <v-text-field label="Familia" dense outlined></v-text-field>
+            </v-col>
+
+            <v-col cols="12" sm="4">
+              <v-text-field label="Unidad" dense outlined></v-text-field>
+            </v-col>
+
+            <v-col cols="12" sm="4">
+              <v-text-field label="Peso Grs" dense outlined></v-text-field>
+            </v-col>
+
+            <v-col cols="12" sm="4">
+              <v-text-field label="Precio" dense outlined></v-text-field>
+            </v-col>
+
+            <v-col cols="12" sm="4">
+              <v-text-field label="Cantidad minima" dense outlined></v-text-field>
+            </v-col>
+
+            <v-col cols="12" sm="4">
+              <h4>Disponibilidad</h4>
+            </v-col>
+          </v-row>
+        </v-container>
+      </v-card>
+    </v-dialog>
   </v-row>
 </template>
 
 <script>
 export default {
-  name: 'IndexPage',
+  name: 'IndexProducts',
+
+  data() {
+    return {
+      dialogFormProduct: false,
+      headers: [
+        {
+          text: 'Código',
+          align: 'start',
+          sortable: false,
+          value: 'id',
+        },
+        { text: 'Nombre', value: 'name' },
+        { text: 'Familia', value: 'family' },
+        { text: 'Observaciones', value: 'observations' },
+        { text: 'Precio', value: 'price' },
+        { text: 'Disponibilidad', value: 'available' },
+        { text: 'Opciones', value: 'options' },
+      ],
+    }
+  },
 }
 </script>

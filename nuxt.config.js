@@ -26,7 +26,7 @@ export default {
   // Modules for dev and build (recommended): https://go.nuxtjs.dev/config-modules
   buildModules: [
     // https://go.nuxtjs.dev/eslint
-    '@nuxtjs/eslint-module',
+    // '@nuxtjs/eslint-module',
     // https://go.nuxtjs.dev/vuetify
     '@nuxtjs/vuetify',
   ],
@@ -56,10 +56,11 @@ export default {
   vuetify: {
     customVariables: ['~/assets/variables.scss'],
     theme: {
-      dark: true,
+      dark: false,
+      light: true,
       themes: {
         dark: {
-          primary: colors.blue.darken2,
+          primary: '#001732',
           accent: colors.grey.darken3,
           secondary: colors.amber.darken3,
           info: colors.teal.lighten1,
@@ -67,6 +68,17 @@ export default {
           error: colors.deepOrange.accent4,
           success: colors.green.accent3,
         },
+
+        light:{
+          primary: '#001732',
+          accent: colors.grey.darken3,
+          secondary: colors.amber.darken3,
+          info: '#009688',
+          warning: colors.amber.base,
+          error: '#f44336',
+          success: '#4caf50',
+
+        }
       },
     },
   },
