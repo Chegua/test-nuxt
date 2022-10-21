@@ -173,11 +173,11 @@ export default {
     }
   },
   methods: {
-    onSubmit() {
+    async onSubmit() {
       await this.$axios
         .post('/products',this.product)
         .then((res) => {
-          this.products = res.data
+          console.log(res);
         })
         .catch((error) => {
           console.log(error)
