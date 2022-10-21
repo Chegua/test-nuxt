@@ -24,6 +24,7 @@
                   dense
                   outlined
                   :error-messages="errors[0]"
+                  v-model.trim="product.name"
                 ></v-text-field>
               </ValidationProvider>
             </v-col>
@@ -39,6 +40,7 @@
                   dense
                   outlined
                   :error-messages="errors[0]"
+                  v-model.trim="product.short_name"
                 ></v-text-field>
               </ValidationProvider>
             </v-col>
@@ -55,6 +57,7 @@
                   dense
                   outlined
                   :error-messages="errors[0]"
+                  v-model="product.family"
                 ></v-select>
               </ValidationProvider>
             </v-col>
@@ -71,6 +74,7 @@
                   dense
                   outlined
                   :error-messages="errors[0]"
+                  v-model="product.unit"
                 ></v-select>
               </ValidationProvider>
             </v-col>
@@ -87,6 +91,7 @@
                   dense
                   outlined
                   :error-messages="errors[0]"
+                  v-model="product.weight"
                 ></v-text-field>
               </ValidationProvider>
             </v-col>
@@ -102,6 +107,7 @@
                   dense
                   outlined
                   :error-messages="errors[0]"
+                  v-model="product.price"
                 ></v-text-field>
               </ValidationProvider>
             </v-col>
@@ -117,6 +123,7 @@
                   dense
                   outlined
                   :error-messages="errors[0]"
+                  v-model="product.min_amount"
                 ></v-text-field>
               </ValidationProvider>
             </v-col>
@@ -166,7 +173,31 @@ export default {
     }
   },
   methods: {
-    onSubmit() {},
+    onSubmit() {
+      await this.$axios
+        .post('/products',this.product)
+        .then((res) => {
+          this.products = res.data
+        })
+        .catch((error) => {
+          console.log(error)
+        })
+    },
+
+    closeModal() {
+      this.product = {
+        name: '',
+        short_name: '',
+        family: null,
+        unit: null,
+        weight: 0,
+        price: 0,
+        min_amount: 0,
+        availability: 'Disponible',
+      };
+      this.$refs.formProduct.reset();
+      this.$emit("closeModal", false);
+    },
   },
 }
 </script>

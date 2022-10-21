@@ -14,7 +14,7 @@
           <v-col cols="12">
             <v-data-table
               :headers="headers"
-              :items="[]"
+              :items="products"
               :items-per-page="5"
               class="elevation-1"
               hide-default-footer
@@ -40,14 +40,58 @@
                   ></v-text-field>
                 </v-toolbar>
               </template>
-              
+
+              <template v-slot:[`item.options`]="{ item }">
+                <v-container
+                  class="px-0 py-0 d-flex justify-center align-center"
+                >
+                  <v-tooltip bottom color="black">
+                    <template v-slot:activator="{ on, attrs }">
+                      <v-btn
+                        v-bind="attrs"
+                        v-on="on"
+                        dark
+                        icon
+                        fab
+                        class="my-1"
+                        small
+                        depressed
+                        color="black"
+                      >
+                        <v-icon> mdi-pencil </v-icon>
+                      </v-btn>
+                    </template>
+                    <span>Editar</span>
+                  </v-tooltip>
+
+                  <v-tooltip bottom color="black">
+                    <template v-slot:activator="{ on, attrs }">
+                      <v-btn
+                        v-bind="attrs"
+                        v-on="on"
+                        dark
+                        icon
+                        fab
+                        class="my-1"
+                        small
+                        depressed
+                        color="black"
+                        @click="confirmDelete(item)"
+                      >
+                        <v-icon> mdi-delete </v-icon>
+                      </v-btn>
+                    </template>
+                    <span>Eliminar</span>
+                  </v-tooltip>
+                </v-container>
+              </template>
             </v-data-table>
           </v-col>
         </v-row>
       </v-card>
     </v-col>
     <v-dialog v-model="dialogFormProduct">
-      <form-product/>      
+      <form-product @closeModal="dialogFormProduct = $event" />
     </v-dialog>
   </v-row>
 </template>
@@ -57,8 +101,8 @@ import FormProduct from '@/components/products/form-product.vue'
 export default {
   name: 'IndexProducts',
 
-  components:{
-    FormProduct
+  components: {
+    FormProduct,
   },
 
   data() {
@@ -73,12 +117,33 @@ export default {
         },
         { text: 'Nombre', value: 'name' },
         { text: 'Familia', value: 'family' },
-        { text: 'Observaciones', value: 'observations' },
+        // { text: 'Observaciones', value: 'observations' },
         { text: 'Precio', value: 'price' },
-        { text: 'Disponibilidad', value: 'available' },
+        { text: 'Disponibilidad', value: 'availability' },
         { text: 'Opciones', value: 'options' },
       ],
+
+      products: [],
     }
+  },
+
+  created() {
+    this.listProducts()
+  },
+
+  methods: {
+    async listProducts() {
+      await this.$axios
+        .get('/products')
+        .then((res) => {
+          this.products = res.data
+        })
+        .catch((error) => {
+          console.log(error)
+        })
+    },
+
+    confirmDelete(product) {},
   },
 }
 </script>
