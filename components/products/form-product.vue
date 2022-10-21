@@ -1,7 +1,15 @@
 <template>
   <v-card tile>
     <v-toolbar flat dark color="primary">
-      <v-toolbar-title>Nuevo producto</v-toolbar-title>
+      <v-toolbar-title
+        >{{ !edit ? 'Nuevo' : 'Editar' }} producto</v-toolbar-title
+      >
+
+      <div class="spacer"></div>
+
+      <v-btn icon @click="closeModal">
+        <v-icon>mdi-close</v-icon>
+      </v-btn>
     </v-toolbar>
 
     <v-container fluid>
@@ -86,7 +94,9 @@
                 v-slot="{ errors }"
               >
                 <v-text-field
+                  @keypress="isNumber($event)"
                   type="number"
+                  :min="0"
                   label="Peso Grs"
                   dense
                   outlined
@@ -103,6 +113,9 @@
                 v-slot="{ errors }"
               >
                 <v-text-field
+                  @keypress="isNumber($event)"
+                  type="number"
+                  :min="0"
                   label="Precio"
                   dense
                   outlined
@@ -119,6 +132,9 @@
                 v-slot="{ errors }"
               >
                 <v-text-field
+                  @keypress="isNumber($event)"
+                  type="number"
+                  :min="0"
                   label="Cantidad minima"
                   dense
                   outlined
@@ -138,7 +154,9 @@
           </v-row>
 
           <v-col cols="12" class="d-flex justify-end">
-            <v-btn type="submit" color="success">Guardar</v-btn>
+            <v-btn type="submit" color="success">{{
+              !edit ? 'Guardar' : 'Editar'
+            }}</v-btn>
           </v-col>
         </form>
       </ValidationObserver>
@@ -172,17 +190,55 @@ export default {
       },
     }
   },
+
+  props: {
+    edit: {
+      type: Boolean,
+      default: false,
+    },
+
+    produdctEdit: null,
+  },
+
+  watch: {
+    produdctEdit: function (value) {
+      if (value) this.product = value
+    },
+  },
   methods: {
-    async onSubmit() {
+    isNumber(e) {
+      let char = String.fromCharCode(e.keyCode) // Get the character
+      if (/^[0-9]+$/i.test(char)) return true // Match with regex
+      else e.preventDefault() // If not match, don't add to input text
+    },
+    onSubmit() {
+      if (!this.edit) this.saveProduct()
+      else this.updateProduct()
+    },
+
+    async saveProduct() {
       await this.$axios
-        .post('/products',this.product)
+        .post('/products', this.product)
         .then((res) => {
-          console.log(res);
+          console.log(res)
+          this.product = {
+            name: '',
+            short_name: '',
+            family: null,
+            unit: null,
+            weight: 0,
+            price: 0,
+            min_amount: 0,
+            availability: 'Disponible',
+          }
+          this.$refs.formProduct.reset()
+          this.$emit('successfullySave', res.data)
         })
         .catch((error) => {
           console.log(error)
         })
     },
+    updateProduct() {},
 
     closeModal() {
       this.product = {
@@ -194,9 +250,9 @@ export default {
         price: 0,
         min_amount: 0,
         availability: 'Disponible',
-      };
-      this.$refs.formProduct.reset();
-      this.$emit("closeModal", false);
+      }
+      this.$refs.formProduct.reset()
+      this.$emit('closeModal', false)
     },
   },
 }

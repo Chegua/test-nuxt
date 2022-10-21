@@ -25,7 +25,7 @@
                   <v-divider class="mx-4" inset vertical></v-divider>
                   <v-btn
                     color="success"
-                    @click="dialogFormProduct = true"
+                    @click="addNew"
                     small
                     dark
                     class="mb-2"
@@ -57,6 +57,7 @@
                         small
                         depressed
                         color="black"
+                        @click="editProduct(item)"
                       >
                         <v-icon> mdi-pencil </v-icon>
                       </v-btn>
@@ -91,7 +92,12 @@
       </v-card>
     </v-col>
     <v-dialog v-model="dialogFormProduct">
-      <form-product @closeModal="dialogFormProduct = $event" />
+      <form-product
+        @closeModal="clearFormModal($event)"
+        @successfullySave="successfullySave"
+        :edit="edit"
+        :produdctEdit="product"
+      />
     </v-dialog>
   </v-row>
 </template>
@@ -122,6 +128,9 @@ export default {
         { text: 'Disponibilidad', value: 'availability' },
         { text: 'Opciones', value: 'options' },
       ],
+      product: null,
+
+      edit: false,
 
       products: [],
     }
@@ -132,6 +141,9 @@ export default {
   },
 
   methods: {
+    addNew() {
+      this.dialogFormProduct = true
+    },
     async listProducts() {
       await this.$axios
         .get('/products')
@@ -143,7 +155,25 @@ export default {
         })
     },
 
+    clearFormModal(e) {
+      this.dialogFormProduct = e
+      this.edit = false
+
+      this.product = null
+    },
+
+    editProduct(product) {
+      this.product = product
+      this.edit = true
+      this.dialogFormProduct = true
+    },
+
     confirmDelete(product) {},
+
+    successfullySave() {
+      this.listProducts()
+      this.clearFormModal()
+    },
   },
 }
 </script>
