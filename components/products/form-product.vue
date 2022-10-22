@@ -176,7 +176,9 @@ export default {
         'Pack',
       ],
 
-      unitOptions: ['KG', 'GL', 'UN', 'Uni', 'Bolsa'],
+      unitOptions: ['KG', 'GL', 'UN', 'Uni', 'Bolsa'],      
+
+      productId:null,
 
       product: {
         name: '',
@@ -202,7 +204,17 @@ export default {
 
   watch: {
     produdctEdit: function (value) {
-      if (value) this.product = value
+      if (value) {
+        this.productId= value.id
+        this.product.name = value.name
+        this.product.short_name = value.short_name
+        this.product.family = value.family
+        this.product.unit = value.unit
+        this.product.weight = value.weight
+        this.product.price = value.price
+        this.product.min_amount = value.min_amount
+        this.product.availability = value.availability
+      }
     },
   },
   methods: {
@@ -232,13 +244,54 @@ export default {
             availability: 'Disponible',
           }
           this.$refs.formProduct.reset()
+          this.$swal.fire({
+            icon: 'success',
+            title: `Producto guardado con exito`,
+            showConfirmButton: false,
+            timer: 5000,
+            position: 'bottom-end',
+            timerProgressBar: true,
+            toast: true,
+            showCloseButton: true,
+          })
           this.$emit('successfullySave', res.data)
         })
         .catch((error) => {
           console.log(error)
         })
     },
-    updateProduct() {},
+    async updateProduct() {
+      await this.$axios
+        .put(`/products/${this.productId}`, this.product)
+        .then((res) => {
+          console.log(res)
+          this.product = {
+            name: '',
+            short_name: '',
+            family: null,
+            unit: null,
+            weight: 0,
+            price: 0,
+            min_amount: 0,
+            availability: 'Disponible',
+          }
+          this.$refs.formProduct.reset()
+          this.$swal.fire({
+            icon: 'success',
+            title: `Producto actualizado con exito`,
+            showConfirmButton: false,
+            timer: 5000,
+            position: 'bottom-end',
+            timerProgressBar: true,
+            toast: true,
+            showCloseButton: true,
+          })
+          this.$emit('successfullySave', res.data)
+        })
+        .catch((error) => {
+          console.log(error)
+        })
+    },
 
     closeModal() {
       this.product = {

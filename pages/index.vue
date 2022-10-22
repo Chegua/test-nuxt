@@ -17,6 +17,7 @@
               :items="products"
               :items-per-page="5"
               class="elevation-1"
+              :loading="loadingTable"
               hide-default-footer
             >
               <template v-slot:top>
@@ -114,6 +115,7 @@ export default {
   data() {
     return {
       dialogFormProduct: false,
+      loadingTable: false,
       headers: [
         {
           text: 'Código',
@@ -145,13 +147,16 @@ export default {
       this.dialogFormProduct = true
     },
     async listProducts() {
+      this.loadingTable = true;
       await this.$axios
         .get('/products')
         .then((res) => {
           this.products = res.data
+          this.loadingTable = false;
         })
         .catch((error) => {
           console.log(error)
+          this.loadingTable = false;
         })
     },
 
@@ -168,12 +173,49 @@ export default {
       this.dialogFormProduct = true
     },
 
-    confirmDelete(product) {},
+    confirmDelete(product) {
+      this.$swal
+        .fire({
+          title: `Esta seguro que desea borrar el producto ${product.name}?`,
+          text: 'Esta acción no se puede revertir',
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonText: 'Aceptar',
+          cancelButtonText: 'Cancelar',
+        })
+        .then((result) => {
+          if (result.isConfirmed) {
+            this.deleteProduct(product.id)
+          }
+        })
+    },
+
+    deleteProduct(idProduct) {
+      this.$axios
+        .delete(`/products/${idProduct}`)
+        .then((res) => {
+          this.$swal.fire({
+            icon: 'success',
+            title: `Producto borrado con exito`,
+            showConfirmButton: false,
+            timer: 5000,
+            position: 'bottom-end',
+            timerProgressBar: true,
+            toast: true,
+            showCloseButton: true,
+          })
+          this.listProducts()
+        })
+        .catch((err) => {
+          console.error(err)
+        })
+    },
 
     successfullySave() {
       this.listProducts()
-      this.clearFormModal()
+      this.clearFormModal(false)
     },
+   
   },
 }
 </script>
