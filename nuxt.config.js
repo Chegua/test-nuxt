@@ -44,7 +44,10 @@ export default {
   axios: {
     baseURL: process.env.API_URL,
     proxyHeaders: false,
-    credentials: false,
+    credentials: true,
+    common: {
+      'Accept': 'application/json, text/plain, */*'
+    },
   },
 
   // PWA module configuration: https://go.nuxtjs.dev/pwa
